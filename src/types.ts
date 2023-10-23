@@ -7,4 +7,4 @@ export type Config = {
   timeout?: number;
   strict_url_change?: boolean;
   disable_in_edit_mode?: boolean;
-}
+};

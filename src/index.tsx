@@ -28,8 +28,8 @@ class AnchorCard extends HTMLElement {
     let element: HTMLElement | null = this;
     let depth = 0;
     /*
-    * Modify this if you want to limit the depth of the search.
-    */
+     * Modify this if you want to limit the depth of the search.
+     */
     const MAX_DEPTH = 20;
 
     while (element && depth < MAX_DEPTH) {
@@ -38,27 +38,27 @@ class AnchorCard extends HTMLElement {
       }
       if (
         /*
-        * Modify this if you want to stop the card from scrolling in certain cases.
-        * HUI-DIALOG-EDIT-CARD included by default to prevent scrolling in config mode.
-        */
+         * Modify this if you want to stop the card from scrolling in certain cases.
+         * HUI-DIALOG-EDIT-CARD included by default to prevent scrolling in config mode.
+         */
         element.tagName === 'HUI-DIALOG-EDIT-CARD'
       ) {
         return null;
       }
       if (
         /*
-        * Modify this to match the biggest parent unique to the card.
-        * The parent should ideally be always visible.
-        * The card uses the parent to determine when the visible dashboard changes.
-        * The parent CANNOT:
-        *  - be too small to ever come out of view on scroll (e.g. a small stack card)
-        *  - stay the same between dashboards (e.g. <hui-masonry-view>)
-        */
+         * Modify this to match the biggest parent unique to the card.
+         * The parent should ideally be always visible.
+         * The card uses the parent to determine when the visible dashboard changes.
+         * The parent CANNOT:
+         *  - be too small to ever come out of view on scroll (e.g. a small stack card)
+         *  - stay the same between dashboards (e.g. <hui-masonry-view>)
+         */
         element.classList?.contains('column')
       ) {
         return element;
       }
-      element = element.parentElement || element.getRootNode() as HTMLElement;
+      element = element.parentElement || (element.getRootNode() as HTMLElement);
       // eslint-disable-next-line no-plusplus
       depth++;
     }
@@ -93,12 +93,11 @@ class AnchorCard extends HTMLElement {
       const checkLocationChange = debounce(() => {
         const newUrl = window.location.href;
 
-        if (
-          this.config.disable_in_edit_mode !== false
-          && window.location.search.includes('edit=1')
-        ) return;
+        if (this.config.disable_in_edit_mode !== false && window.location.search.includes('edit=1')) {
+          return;
+        }
 
-        if (this.config.strict_url_change && (newUrl === this.lastUrl)) return;
+        if (this.config.strict_url_change && newUrl === this.lastUrl) return;
 
         window.dispatchEvent(new Event('locationchange'));
         this.lastUrl = newUrl;
@@ -153,46 +152,46 @@ class AnchorCard extends HTMLElement {
 
   private _render = () => {
     render(
-      (
-        <>
-          { /* @ts-ignore */ }
-          <ha-card style={{
+      <>
+        {/* @ts-ignore */}
+        <ha-card
+          style={{
             margin: `-${this.config.negative_margin || 13}px 0`,
           }}
-          >
-            {!this.config.anchor_id && (
-              <ul style={{ padding: '20px' }}>
-                <li>
-                  anchor_id - set a per-page unique identifier.
-                  scroll to this card using the url param
-                  {' '}
-                  <strong>anchor</strong>
-                  <br />
-                  <i>example: lovelace/0?anchor=lights</i>
-                </li>
-                <li>
-                  negative_margin - set a negative margin of the card to fix spacing visuals.
-                  default is 13px.
-                </li>
-                <li>
-                  timeout - set a timeout to wait before scrolling to the card. default is 150ms.
-                  increase this if other cards take long to render.
-                </li>
-                <li>
-                  offset - the scroll offset. default is 0. can be a negative value.
-                </li>
-                <li>
-                  strict_url_change - set to true to only scroll when the url changes.
-                </li>
-                <li>
-                  disable_in_edit_mode - prevent scrolling when edit=1.
-                </li>
-              </ul>
-            )}
-            { /* @ts-ignore */ }
-          </ha-card>
-        </>
-      ), this,
+        >
+          {!this.config.anchor_id && (
+            <ul style={{ padding: '20px' }}>
+              <li>
+                anchor_id - set a per-page unique identifier. scroll to this
+                card using the url param
+                <strong>anchor</strong>
+                <br />
+                <i>example: lovelace/0?anchor=lights</i>
+              </li>
+              <li>
+                negative_margin - set a negative margin of the card to fix
+                spacing visuals. default is 13px.
+              </li>
+              <li>
+                timeout - set a timeout to wait before scrolling to the card.
+                default is 150ms. increase this if other cards take long to
+                render.
+              </li>
+              <li>
+                offset - the scroll offset. default is 0. can be a negative
+                value.
+              </li>
+              <li>
+                strict_url_change - set to true to only scroll when the url
+                changes.
+              </li>
+              <li>disable_in_edit_mode - prevent scrolling when edit=1.</li>
+            </ul>
+          )}
+          {/* @ts-ignore */}
+        </ha-card>
+      </>,
+      this,
     );
   };
 
