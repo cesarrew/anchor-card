@@ -69,7 +69,6 @@ class AnchorCard extends HTMLElement {
   scrollToAnchor() {
     setTimeout(() => {
       const anchorId = this.config.anchor_id;
-
       const urlParams = new URLSearchParams(window.location.search);
       const anchorParam = urlParams.get('anchor');
 
@@ -84,6 +83,14 @@ class AnchorCard extends HTMLElement {
           top: rect.top + scrollTop + offset,
           behavior: 'smooth',
         });
+
+        // Removes anchor from the url to avoid unwanted scrolling
+        setTimeout(() => {
+          urlParams.delete('anchor');
+          const url = new URL(window.location.href);
+          url.search = urlParams.toString();
+          window.history.pushState(null, null, url.toString());
+        }, 0);
       }
     }, this.config.timeout || 150);
   }
@@ -97,13 +104,16 @@ class AnchorCard extends HTMLElement {
           return;
         }
 
-        if (this.config.strict_url_change && newUrl === this.lastUrl) return;
+        if (this.config.strict_url_change && newUrl === this.lastUrl) {
+          return;
+        }
 
         window.dispatchEvent(new Event('locationchange'));
         this.lastUrl = newUrl;
       }, 100);
 
       const oldPushState = window.history.pushState;
+
       window.history.pushState = function pushState(...args) {
         const ret = oldPushState.apply(this, args);
         window.dispatchEvent(new Event('pushstate'));
@@ -112,6 +122,7 @@ class AnchorCard extends HTMLElement {
       };
 
       const oldReplaceState = window.history.replaceState;
+
       window.history.replaceState = function replaceState(...args) {
         const ret = oldReplaceState.apply(this, args);
         window.dispatchEvent(new Event('replacestate'));
@@ -210,6 +221,7 @@ declare global {
 }
 
 window.customCards = window.customCards || [];
+
 window.customCards.push({
   type: 'anchor-card',
   name: 'Anchor Card',
